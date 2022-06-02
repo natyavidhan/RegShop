@@ -17,11 +17,9 @@ class Database:
             '_id': id,
             'username': user['name'],
             'email': user['email'],
-            'avatar': f'https://avatars.dicebear.com/api/bottts/{id}.svg',
             'shops': [],
             'created': datetime.datetime.now().strftime("%d %B %Y, %I:%M:%S %p")
         })
-        pass
     
     def userExists(self, email):
         return self.users.find_one({'email': email}) is not None
@@ -31,3 +29,6 @@ class Database:
     
     def getUserWithId(self, id):
         return self.users.find_one({'_id': id})
+
+    def getUserShops(self, id):
+        return self.users.find_one({'_id': id})['shops']

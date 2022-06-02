@@ -20,12 +20,19 @@ database = Database(os.getenv('MONGO_URL'))
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    if 'user' not in session:
+        return render_template('index.html')
+    shops = database.getUserShops(session['user']['_id'])
+    return render_template('user.html', user=session['user'], shops=shops)
+
+@app.route('/logout')
+def logout():
+    session.pop('user', None)
+    return redirect(url_for('index'))
 
 def handle_authorize(remote, token, user_info):
-    print(user_info)
     if not database.userExists(user_info['email']):
-        database.addUser(user_info['email'])
+        database.addUser(user_info)
     session['user'] = database.getUser(user_info['email'])
     return redirect(url_for('index'))
 
