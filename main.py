@@ -30,6 +30,17 @@ def logout():
     session.pop('user', None)
     return redirect(url_for('index'))
 
+@app.route('/new', methods=['GET', 'POST'])
+def new():
+    if 'user' not in session:
+        return redirect(url_for('index'))
+    if request.method == 'POST':
+        name = request.form['name']
+        description = request.form['description']
+        print(name, description)
+        return redirect(url_for('index'))
+    return render_template('new.html')
+
 def handle_authorize(remote, token, user_info):
     if not database.userExists(user_info['email']):
         database.addUser(user_info)

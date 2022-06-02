@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Home{% endblock title %}
+{% block body %}
+    <div class="text-center">
+        <h1>Create New Shop</h1>
+    </div>
+    <form method="post">
+        <div class="form-floating">
+            <input type="text" class="form-control" id="name" required name="name">
+            <label>Shop Name</label>
+        </div>
+        <h5 class="text-muted mb-3" id="shop-id">Shop ID:</h5>
+        <div class="form-floating">
+            <textarea class="form-control"style="height: 100px" name="description"></textarea>
+            <label>Shop Description (Optional)</label>
+        </div>
+        <button type="submit" class="btn btn-outline-success mt-5">Create!</button>
+    </form>
+    <script>
+        $("#name").on("input", function() {
+            let name = $("#name").val();
+            let id = name.toLowerCase().replace(/ /g, '-');
+            $("#shop-id").text("Shop ID: " + id);
+        });
+    </script>
+{% endblock body %}
