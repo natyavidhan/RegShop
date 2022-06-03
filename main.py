@@ -37,7 +37,9 @@ def new():
     if request.method == 'POST':
         name = request.form['name']
         description = request.form['description']
-        print(name, description)
+        if name.strip() == '' or name==None:
+            return render_template('new.html')
+        database.addShop(name, description, session['user'])
         return redirect(url_for('index'))
     return render_template('new.html')
 

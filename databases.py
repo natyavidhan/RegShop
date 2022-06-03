@@ -9,7 +9,7 @@ class Database:
         self.client = MongoClient(URL)
         self.db = self.client.RegShop
         self.users = self.db.users
-        self.snips = self.db.snips
+        self.shops = self.db.shops
         
     def addUser(self, user):
         id =str(uuid4())
@@ -31,4 +31,17 @@ class Database:
         return self.users.find_one({'_id': id})
 
     def getUserShops(self, id):
-        return self.users.find_one({'_id': id})['shops']
+        shops = self.users.find_one({'_id': id})['shops']
+        return [self.shops.find_one({'_id': shop}) for shop in shops]
+
+
+    def addShop(self, name, description, user):
+        shop = {
+            '_id': str(uuid4()),
+            'name': name,
+            'description': description,
+            'owner': user['_id'],
+            'created': datetime.datetime.now().strftime("%d %B %Y, %I:%M:%S %p")
+        }
+        self.shops.insert_one(shop)
+        self.users.update_one({'_id': user['_id']}, {'$push': {'shops': shop['_id']}})

@@ -12,8 +12,8 @@
         {% for shop in shops %}
         <div class="card border-dark mb-3" style="max-width: 18rem;">
             <div class="card-body text-dark">
-                <h5 class="card-title">Shop Name</h5>
-                <p class="card-text">Shop Description</p>
+                <h5 class="card-title">{{shop['name']}}</h5>
+                <p class="card-text">{{shop['description']}}</p>
             </div>
         </div>
         {% endfor %}
