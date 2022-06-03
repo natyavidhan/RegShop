@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block title %}{{shop['name']}}{% endblock title %}
+{% block body %}
+    <div class="text-center">
+        <h2>{{shop['name']}}</h2>
+        <h5>{{shop['description']}}</h5>
+        <a href="/shop/{{shop['_id']}}/items"><button class="btn btn-outline-dark">Shop Items</button></a>
+        <a href="/shop/{{shop['_id']}}/receipts"><button class="btn btn-outline-dark">Shop Receipts</button></a>
+        <a href="/shop/{{shop['_id']}}/receipt/new"><button class="btn btn-outline-dark">New Receipt</button></a>
+    </div>
+{% endblock body %}

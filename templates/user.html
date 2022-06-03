@@ -10,7 +10,7 @@
     </div>
     <div class="card-group">
         {% for shop in shops %}
-        <div class="card border-dark mb-3" style="max-width: 18rem;">
+        <div class="card border-dark mb-3" style="max-width: 18rem;" onclick="open_shop(`{{shop['_id']}}`)">
             <div class="card-body text-dark">
                 <h5 class="card-title">{{shop['name']}}</h5>
                 <p class="card-text">{{shop['description']}}</p>
@@ -18,4 +18,9 @@
         </div>
         {% endfor %}
     </div>
+    <script>
+        function open_shop(id) {
+            window.location.href = "/shop/" + id;
+        }
+    </script>
 {% endblock body %}

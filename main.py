@@ -43,6 +43,17 @@ def new():
         return redirect(url_for('index'))
     return render_template('new.html')
 
+@app.route('/shop/<id>')
+def shop(id):
+    if 'user' not in session:
+        return redirect(url_for('index'))
+    shop = database.getShop(id)
+    if shop is None:
+        return redirect(url_for('index'))
+    elif shop['owner'] != session['user']['_id']:
+        return redirect(url_for('index'))
+    return render_template('shop.html', shop=shop)
+
 def handle_authorize(remote, token, user_info):
     if not database.userExists(user_info['email']):
         database.addUser(user_info)

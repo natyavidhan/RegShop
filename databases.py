@@ -34,14 +34,18 @@ class Database:
         shops = self.users.find_one({'_id': id})['shops']
         return [self.shops.find_one({'_id': shop}) for shop in shops]
 
-
     def addShop(self, name, description, user):
         shop = {
             '_id': str(uuid4()),
             'name': name,
             'description': description,
             'owner': user['_id'],
+            'items': [],
+            'receipts': [],
             'created': datetime.datetime.now().strftime("%d %B %Y, %I:%M:%S %p")
         }
         self.shops.insert_one(shop)
         self.users.update_one({'_id': user['_id']}, {'$push': {'shops': shop['_id']}})
+
+    def getShop(self, id):
+        return self.shops.find_one({'_id': id})
