@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from authlib.integrations.flask_client import OAuth
 from loginpass import create_flask_blueprint, Google
 from dotenv import load_dotenv
@@ -74,6 +74,8 @@ def shop_items(id):
             return render_template('shop_items.html', shop=shop)
         database.addItem(shop, name, price)
         return redirect(url_for('shop_items', id=id))
+    if 'json' in request.args:
+        return jsonify(shop['items'])
     return render_template('shop_items.html', shop=shop)
 
 @app.route('/shop/<id>/items/delete')
@@ -85,6 +87,17 @@ def shop_item_delete(id):
     shop = database.getShop(id)
     database.deleteItem(shop, item_id)
     return redirect(url_for('shop_items', id=id))
+
+@app.route('/shop/<id>/receipt/new', methods=['GET', 'POST'])
+def shop_receipt_new(id):
+    if 'user' not in session:
+        return redirect(url_for('index'))
+    shop = database.getShop(id)
+    if shop is None:
+        return redirect(url_for('index'))
+    elif shop['owner'] != session['user']['_id']:
+        return redirect(url_for('index'))
+    return render_template('new_receipt.html', shop=shop)
 
 def handle_authorize(remote, token, user_info):
     if not database.userExists(user_info['email']):

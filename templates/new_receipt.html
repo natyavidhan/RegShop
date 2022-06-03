@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% block title %}New Receipt | {{shop['name']}}{% endblock title %}
+{% block body %}
+    <div class="text-center">
+        <h1>Create New Receipt</h1>
+    </div>
+    <div class="reciept">
+        <div class="mt-5 mb-5">
+            <div class="input-group mb-3">
+                <span class="input-group-text">Item Name</span>
+                <input type="text" class="form-control item-name" name="item-name">
+            </div>
+            <ul class="list-group">
+            </ul>
+        </div>
+        <form method="post">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Total Price</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- <tr>
+                        <th scope="row">1</th>
+                        <td>Mark</td>
+                        <td>Otto</td>
+                        <td>@mdo</td>
+                        <td><button></td>
+                    </tr> -->
+                </tbody>
+                </table>
+        </form>
+    </div>
+
+    <script>
+        let items;
+        let list = [];
+        $.ajax({
+            url: "/shop/{{shop['_id']}}/items?json=true",
+            type: "GET",
+            success: function(data) {
+                items = data;
+            }
+        })
+        $(".item-name").on("input", function() {
+            let name = $(".item-name").val();
+            let avItems = [];
+            if (name == "") {
+                $(".list-group").html("");
+                return;
+            }
+            for (let i = 0; i < items.length; i++) {
+                if (items[i]['name'].toLowerCase().includes(name.toLowerCase())) {
+                    avItems.push(items[i]);
+                }
+            }
+            let html = "";
+            for (let i = 0; i < avItems.length; i++) {
+                let name = avItems[i]['name'];
+                let price = avItems[i]['price'];
+                if ({name: name, price: price} in list == false) {
+                    html += `
+<li class="list-group-item" onclick="addItem('` + name + `', ` + price + `)">
+    <span class="item-name">` + name + `</span>
+    <span class="item-price">(` + price + `)</span>
+</li>
+                    `
+                }
+            }
+            $(".list-group").html(html);
+        });
+        function addItem(item, price) {
+            item_arr = {
+                name: item,
+                price: price
+            }
+            console.log(item_arr in list);
+            if (item_arr in list == false) {
+                list.push(item_arr);
+            }
+            console.log(list);
+            fillTable();
+        }
+        function fillTable(){
+            let sorted_items = {}
+            for (let i = 0; i < list.length; i++) {
+                let item = list[i];
+                if (item['name'] in sorted_items == false) {
+                    sorted_items[item['name']] = {
+                        name: item['name'],
+                        price: item['price'],
+                        quantity: 1,
+                        total: item['price']
+                    }
+                } else {
+                    sorted_items[item['name']]['quantity'] += 1;
+                    sorted_items[item['name']]['total'] += item['price'];
+                }
+            }
+            let html = "";
+            for (let i = 0; i < Object.keys(sorted_items).length; i++) {
+                let item = sorted_items[Object.keys(sorted_items)[i]];
+                html += `
+<tr>
+    <th scope="row">` + (i + 1) + `</th>
+    <td>` + item['name'] + `</td>
+    <td>` + item['price'] + `</td>
+    <td>` + item['quantity'] + `</td>
+    <td>` + item['total'] + `</td>
+    <td><button class="btn btn-danger" onclick="removeItem('` + item['name'] + `')">Remove</button></td>
+</tr>
+                `
+            }
+            $(".table tbody").html(html);
+
+        }
+
+        function removeItem(item) {
+            console.log(item);
+            for (let i = 0; i < list.length; i++) {
+                if (list[i]['name'] == item) {
+                    list.splice(i, 1);
+                    break;
+                }
+            }
+            fillTable();
+        }
+    </script>
+{% endblock body %}
