@@ -52,7 +52,25 @@ def shop(id):
         return redirect(url_for('index'))
     elif shop['owner'] != session['user']['_id']:
         return redirect(url_for('index'))
-    return render_template('shop.html', shop=shop)
+    return render_template('shop.html', shop=shop, receipts=shop['receipts'][:10])
+
+@app.route('/shop/<id>/items', methods=['GET', 'POST'])
+def shop_items(id):
+    if 'user' not in session:
+        return redirect(url_for('index'))
+    shop = database.getShop(id)
+    if shop is None:
+        return redirect(url_for('index'))
+    elif shop['owner'] != session['user']['_id']:
+        return redirect(url_for('index'))
+    if request.method == 'POST':
+        name = request.form['name']
+        price = request.form['price']
+        if name.strip() == '' or name==None:
+            return render_template('shop_items.html', shop=shop)
+        database.addItem(shop, name, price)
+        return redirect(url_for('shop_items', id=id))
+    return render_template('shop_items.html', shop=shop)
 
 def handle_authorize(remote, token, user_info):
     if not database.userExists(user_info['email']):

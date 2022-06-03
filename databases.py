@@ -49,3 +49,13 @@ class Database:
 
     def getShop(self, id):
         return self.shops.find_one({'_id': id})
+    
+    def addItem(self, shop, name, price):
+        items = shop['items']
+        item = {
+            '_id': len(items)+1,
+            'name': name,
+            'price': price,
+            'created': datetime.datetime.now().strftime("%d %B %Y, %I:%M:%S %p")
+        }
+        self.shops.update_one({'_id': shop['_id']}, {'$push': {'items': item['_id']}})
