@@ -62,3 +62,29 @@ class Database:
 
     def deleteItem(self, shop, item_id):
         self.shops.update_one({'_id': shop['_id']}, {'$pull': {'items': {'_id': item_id}}})
+
+    def createReceipt(self, shop, items):
+        final = []
+        for item in items:
+            quantity = items[item]
+            for i in shop['items']:
+                if i['name'] == item:
+                    price = i['price']
+                    break
+            total = float(quantity) * price
+            name = item
+            data = {
+                "name": name,
+                "quantity": quantity,
+                "price": price,
+                "total": total
+            }
+            final.append(data)
+        total_price = sum([i['total'] for i in final])
+        receipt = {
+            '_id': "".join(random.choice("1234567890") for i in range(5)),
+            'items': final,
+            'total': total_price,
+            'created': datetime.datetime.now().strftime("%d %B %Y, %I:%M:%S %p")
+        }
+        self.shops.update_one({'_id': shop['_id']}, {'$push': {'receipts': receipt}})

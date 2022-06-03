@@ -93,6 +93,10 @@ def shop_receipt_new(id):
     if 'user' not in session:
         return redirect(url_for('index'))
     shop = database.getShop(id)
+    if request.method == 'POST':
+        data = request.form.to_dict()
+        database.createReceipt(shop, data)
+        return redirect(url_for('shop_receipt_new', id=id))
     if shop is None:
         return redirect(url_for('index'))
     elif shop['owner'] != session['user']['_id']:

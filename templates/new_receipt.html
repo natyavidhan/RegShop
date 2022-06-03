@@ -26,15 +26,11 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- <tr>
-                        <th scope="row">1</th>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td>@mdo</td>
-                        <td><button></td>
-                    </tr> -->
                 </tbody>
                 </table>
+                <div class="hidden-inputs"></div>
+                <h4 class="total-price">Total Price: 0</h4>
+            <button type="submit" class="btn btn-outline-success mt-5">Submit</button>
         </form>
     </div>
 
@@ -80,11 +76,9 @@
                 name: item,
                 price: price
             }
-            console.log(item_arr in list);
             if (item_arr in list == false) {
                 list.push(item_arr);
             }
-            console.log(list);
             fillTable();
         }
         function fillTable(){
@@ -107,7 +101,7 @@
             for (let i = 0; i < Object.keys(sorted_items).length; i++) {
                 let item = sorted_items[Object.keys(sorted_items)[i]];
                 html += `
-<tr>
+<tr name="` + item['name'] + `">
     <th scope="row">` + (i + 1) + `</th>
     <td>` + item['name'] + `</td>
     <td>` + item['price'] + `</td>
@@ -118,11 +112,24 @@
                 `
             }
             $(".table tbody").html(html);
+            // create hidden inputs for each item
+            let inputs = "";
+            for (let i = 0; i < Object.keys(sorted_items).length; i++) {
+                let item = sorted_items[Object.keys(sorted_items)[i]];
+                inputs += `<input type="hidden" name="` + item['name'] + `" value="` + item['quantity'] + `">`
+            }
+            $(".hidden-inputs").html(inputs);
 
+            // calculate total price
+            let total = 0;
+            for (let i = 0; i < Object.keys(sorted_items).length; i++) {
+                let item = sorted_items[Object.keys(sorted_items)[i]];
+                total += item['total'];
+            }
+            $(".total-price").html(`Total Price: ${total}`);
         }
 
         function removeItem(item) {
-            console.log(item);
             for (let i = 0; i < list.length; i++) {
                 if (list[i]['name'] == item) {
                     list.splice(i, 1);
