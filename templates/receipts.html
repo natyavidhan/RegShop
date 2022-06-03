@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}Receipts | {{shop['name']}}{% endblock title %}
+{% block body %}
+    <div class="text-center">
+        <h1>Receipts</h1>
+    </div>
+    <div class="mt-5 mb-5">
+        {% for receipt in receipts %}
+        <div class="card mt-5">
+            <div class="card-header">
+                Receipt #{{receipt['_id']}}
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">First</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Amount</th>
+                        <th scope="col">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in receipt['items'] %}
+                        <tr>
+                            <th scope="row">{{loop.index}}</th>
+                            <td>{{item['name']}}</td>
+                            <td>{{item['price']}}</td>
+                            <td>{{item['quantity']}}</td>
+                            <td>{{item['total']}}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    </table>
+                    <h5>Total: {{receipt['total']}}</h5>
+            </div>
+            <div class="card-footer text-muted">
+                On: {{receipt['created']}}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% endblock body %}
