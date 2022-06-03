@@ -54,7 +54,7 @@ def shop(id):
         return redirect(url_for('index'))
     return render_template('shop.html', shop=shop, receipts=shop['receipts'][:10])
 
-@app.route('/shop/<id>/items', methods=['GET', 'POST'])
+@app.route('/shop/<id>/items', methods=['GET', 'POST', 'DELETE'])
 def shop_items(id):
     if 'user' not in session:
         return redirect(url_for('index'))
@@ -66,7 +66,11 @@ def shop_items(id):
     if request.method == 'POST':
         name = request.form['name']
         price = request.form['price']
-        if name.strip() == '' or name==None:
+        if name.strip() == '' or name==None or price.strip() == '' or price==None:
+            return render_template('shop_items.html', shop=shop)
+        try:
+            price = float(price)
+        except ValueError:
             return render_template('shop_items.html', shop=shop)
         database.addItem(shop, name, price)
         return redirect(url_for('shop_items', id=id))

@@ -58,4 +58,4 @@ class Database:
             'price': price,
             'created': datetime.datetime.now().strftime("%d %B %Y, %I:%M:%S %p")
         }
-        self.shops.update_one({'_id': shop['_id']}, {'$push': {'items': item['_id']}})
+        self.shops.update_one({'_id': shop['_id']}, {'$push': {'items': item}})
