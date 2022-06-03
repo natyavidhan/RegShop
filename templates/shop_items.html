@@ -49,6 +49,7 @@
                     <th scope="col">ID</th>
                     <th scope="col">Name</th>
                     <th scope="col">Price</th>
+                    <th scope="col">Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -57,9 +58,18 @@
                         <th scope="row">{{item['_id']}}</th>
                         <td>{{item['name']}}</td>
                         <td>{{item['price']}}</td>
+                        <td><button class="btn btn-outline-danger" onclick="delete_item(`{{item['_id']}}`)"><i class="bi bi-trash"></i></button></td>
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
+    <script>
+        function delete_item(id) {
+            var r = confirm("Are you sure you want to delete this item?");
+            if (r == true) {
+                window.location.href = "/shop/{{shop['_id']}}/items/delete?item_id=" + id;
+            }
+        }
+    </script>
 {% endblock body %}

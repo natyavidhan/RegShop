@@ -54,7 +54,7 @@ def shop(id):
         return redirect(url_for('index'))
     return render_template('shop.html', shop=shop, receipts=shop['receipts'][:10])
 
-@app.route('/shop/<id>/items', methods=['GET', 'POST', 'DELETE'])
+@app.route('/shop/<id>/items', methods=['GET', 'POST'])
 def shop_items(id):
     if 'user' not in session:
         return redirect(url_for('index'))
@@ -75,6 +75,16 @@ def shop_items(id):
         database.addItem(shop, name, price)
         return redirect(url_for('shop_items', id=id))
     return render_template('shop_items.html', shop=shop)
+
+@app.route('/shop/<id>/items/delete')
+def shop_item_delete(id):
+    if 'item_id' not in request.args:
+        print('no item id')
+        return redirect(url_for('shop_items', id=id))
+    item_id = request.args.get('item_id')
+    shop = database.getShop(id)
+    database.deleteItem(shop, item_id)
+    return redirect(url_for('shop_items', id=id))
 
 def handle_authorize(remote, token, user_info):
     if not database.userExists(user_info['email']):

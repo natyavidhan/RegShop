@@ -36,7 +36,7 @@ class Database:
 
     def addShop(self, name, description, user):
         shop = {
-            '_id': str(uuid4()),
+            '_id': "".join(random.choice("1234567890") for i in range(5)),
             'name': name,
             'description': description,
             'owner': user['_id'],
@@ -53,9 +53,12 @@ class Database:
     def addItem(self, shop, name, price):
         items = shop['items']
         item = {
-            '_id': len(items)+1,
+            '_id': "".join(random.choice("1234567890") for i in range(5)),
             'name': name,
             'price': price,
             'created': datetime.datetime.now().strftime("%d %B %Y, %I:%M:%S %p")
         }
         self.shops.update_one({'_id': shop['_id']}, {'$push': {'items': item}})
+
+    def deleteItem(self, shop, item_id):
+        self.shops.update_one({'_id': shop['_id']}, {'$pull': {'items': {'_id': item_id}}})
